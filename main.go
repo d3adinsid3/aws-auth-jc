@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"os/exec"
 
 	"github.com/urfave/cli/v2"
 )
@@ -82,7 +83,7 @@ type AwsJumpCloudAuth struct {
 }
 
 func (auth *AwsJumpCloudAuth) shell() {
-	//todo
+	flagsExec(auth.env())
 }
 
 func (auth *AwsJumpCloudAuth) env() []string {
@@ -98,4 +99,15 @@ func (auth *AwsJumpCloudAuth) env() []string {
 	})
 
 	return credentials.toEnv()
+}
+
+func flagsExec(env []string) {
+	cmd := exec.Command("bash", "-i")
+
+	cmd.Env = append(os.Environ(), env...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	cmd.Run()
 }
